@@ -1,0 +1,11 @@
+# Secret keys file (stored locally, never committed)
+*.env
+*.env.*
+.claude_selector_keys.env
+
+# Backup files
+*.bak-*
+*.tmp
+
+# macOS
+.DS_Store
