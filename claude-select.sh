@@ -151,15 +151,19 @@ while true; do
             # Back up current settings
             cp "$SETTINGS_FILE" "$SETTINGS_BAK"
 
-            # Inject GLM env vars into settings.json
-            jq --arg token "$ZAI_AUTH_TOKEN" '.env.ANTHROPIC_BASE_URL = "https://api.z.ai/api/anthropic" | .env.ANTHROPIC_AUTH_TOKEN = $token | .env.ANTHROPIC_API_KEY = ""' \
-                "$SETTINGS_BAK" > "$SETTINGS_FILE"
+            # Inject GLM env vars + context window override into settings.json
+            jq --arg token "$ZAI_AUTH_TOKEN" '
+                .env.ANTHROPIC_BASE_URL = "https://api.z.ai/api/anthropic" |
+                .env.ANTHROPIC_AUTH_TOKEN = $token |
+                .env.ANTHROPIC_API_KEY = "" |
+                .env.CLAUDE_CODE_AUTO_COMPACT_WINDOW = "1000000"
+            ' "$SETTINGS_BAK" > "$SETTINGS_FILE"
 
             # Restore settings on exit (any exit: normal, Ctrl-C, kill)
             trap 'cp "$SETTINGS_BAK" "$SETTINGS_FILE" && rm -f "$SETTINGS_BAK" 2>/dev/null; trap - EXIT INT TERM' EXIT INT TERM
 
-            echo -e "${GREEN}Launching GLM 5.2 (api.z.ai)...${NC}"
-            "$CLAUDE_BIN" --model "glm-5.2" "${LAUNCH_ARGS[@]}" "$@"
+            echo -e "${GREEN}Launching GLM 5.2 (api.z.ai) — 1M context...${NC}"
+            "$CLAUDE_BIN" --model "glm-5.2[1m]" "${LAUNCH_ARGS[@]}" "$@"
             EXIT_CODE=$?
 
             # Restore settings
