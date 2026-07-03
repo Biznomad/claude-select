@@ -192,7 +192,7 @@ while true; do
             jq --arg token "$MOONSHOT_API_KEY" '
                 .env.ANTHROPIC_BASE_URL = "https://api.kimi.com/coding/v1" |
                 .env.ANTHROPIC_AUTH_TOKEN = $token |
-                .env.ANTHROPIC_API_KEY = $token
+                .env.ANTHROPIC_API_KEY = ""
             ' "$SETTINGS_BAK" > "$SETTINGS_FILE"
 
             # Restore settings on exit (any exit: normal, Ctrl-C, kill)
