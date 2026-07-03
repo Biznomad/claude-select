@@ -85,8 +85,8 @@ while true; do
     echo -e "  ${BOLD}${GREEN} 1)${NC} 🌟 Claude Opus (Max Subscription)"
     echo -e "  ${BOLD}${GREEN} 2)${NC} 🧪 GLM 5.2 (api.z.ai Proxy)"
     echo -e "  ${BOLD}${GREEN} 3)${NC} 🌟 Claude Sonnet (API Key)"
-    echo -e "  ${BOLD}${GREEN} 4)${NC} 🚀 Kimi 2.6 (Direct Moonshot AI)"
-    echo -e "  ${BOLD}${GREEN} 5)${NC} 🌌 Kimi 2.6 (OpenRouter)"
+    echo -e "  ${BOLD}${GREEN} 4)${NC} 🚀 Kimi K2.7 Code (Direct Moonshot)"
+    echo -e "  ${BOLD}${GREEN} 5)${NC} 🌌 Kimi K2.7 Code (OpenRouter)"
     echo -e "  ${BOLD}${GREEN} 6)${NC} 🤖 DeepSeek V3 (OpenRouter)"
     echo -e "  ${BOLD}${GREEN} 7)${NC} 🧠 DeepSeek R1 (OpenRouter)"
     echo -e "  ${BOLD}${GREEN} 8)${NC} ♊ Gemini 2.5 Pro (OpenRouter)"
@@ -181,20 +181,20 @@ while true; do
             exec "$CLAUDE_BIN" "${LAUNCH_ARGS[@]}" "$@"
             ;;
         4)
-            get_key_or_prompt "MOONSHOT_API_KEY" "Moonshot API Key (sk-...)"
-            export ANTHROPIC_BASE_URL="https://api.moonshot.ai/anthropic"
+            get_key_or_prompt "MOONSHOT_API_KEY" "Moonshot API Key (sk-kimi-...)"
+            export ANTHROPIC_BASE_URL="https://api.kimi.com/coding/v1"
             export ANTHROPIC_API_KEY="$MOONSHOT_API_KEY"
             export ANTHROPIC_AUTH_TOKEN="$MOONSHOT_API_KEY"
-            echo -e "${GREEN}Launching Kimi 2.6 (direct)...${NC}"
-            exec "$CLAUDE_BIN" --model "kimi-k2.6" "${LAUNCH_ARGS[@]}" "$@"
+            echo -e "${GREEN}Launching Kimi K2.7 Code (direct)...${NC}"
+            exec "$CLAUDE_BIN" --model "kimi-for-coding" "${LAUNCH_ARGS[@]}" "$@"
             ;;
         5)
             get_key_or_prompt "OPENROUTER_API_KEY" "OpenRouter API Key (sk-or-...)"
             export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
             export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
             export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
-            echo -e "${GREEN}Launching Kimi 2.6 (OpenRouter)...${NC}"
-            exec "$CLAUDE_BIN" --model "moonshotai/kimi-k2.6" "${LAUNCH_ARGS[@]}" "$@"
+            echo -e "${GREEN}Launching Kimi K2.7 Code (OpenRouter)...${NC}"
+            exec "$CLAUDE_BIN" --model "moonshotai/kimi-k2.7-code" "${LAUNCH_ARGS[@]}" "$@"
             ;;
         6)
             get_key_or_prompt "OPENROUTER_API_KEY" "OpenRouter API Key (sk-or-...)"
