@@ -182,11 +182,31 @@ while true; do
             ;;
         4)
             get_key_or_prompt "MOONSHOT_API_KEY" "Moonshot API Key (sk-kimi-...)"
-            export ANTHROPIC_BASE_URL="https://api.kimi.com/coding/v1"
-            export ANTHROPIC_API_KEY="$MOONSHOT_API_KEY"
-            export ANTHROPIC_AUTH_TOKEN="$MOONSHOT_API_KEY"
+            SETTINGS_FILE="$HOME/.claude/settings.json"
+            SETTINGS_BAK="$HOME/.claude/settings.json.bak-$$"
+
+            # Back up current settings
+            cp "$SETTINGS_FILE" "$SETTINGS_BAK"
+
+            # Inject Kimi env vars into settings.json
+            jq --arg token "$MOONSHOT_API_KEY" '
+                .env.ANTHROPIC_BASE_URL = "https://api.kimi.com/coding/v1" |
+                .env.ANTHROPIC_AUTH_TOKEN = $token |
+                .env.ANTHROPIC_API_KEY = $token
+            ' "$SETTINGS_BAK" > "$SETTINGS_FILE"
+
+            # Restore settings on exit (any exit: normal, Ctrl-C, kill)
+            trap 'cp "$SETTINGS_BAK" "$SETTINGS_FILE" && rm -f "$SETTINGS_BAK" 2>/dev/null; trap - EXIT INT TERM' EXIT INT TERM
+
             echo -e "${GREEN}Launching Kimi K2.7 Code (direct)...${NC}"
-            exec "$CLAUDE_BIN" --model "kimi-for-coding" "${LAUNCH_ARGS[@]}" "$@"
+            "$CLAUDE_BIN" --model "kimi-for-coding" "${LAUNCH_ARGS[@]}" "$@"
+            EXIT_CODE=$?
+
+            # Restore settings
+            cp "$SETTINGS_BAK" "$SETTINGS_FILE"
+            rm -f "$SETTINGS_BAK" 2>/dev/null
+            trap - EXIT INT TERM
+            exit $EXIT_CODE
             ;;
         5)
             get_key_or_prompt "OPENROUTER_API_KEY" "OpenRouter API Key (sk-or-...)"
