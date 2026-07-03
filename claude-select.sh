@@ -92,7 +92,9 @@ while true; do
     echo -e "  ${BOLD}${GREEN} 8)${NC} ♊ Gemini 2.5 Pro (OpenRouter)"
     echo -e "  ${BOLD}${GREEN} 9)${NC} ⚡ Gemini 2.5 Flash (OpenRouter)"
     echo -e "  ${BOLD}${GREEN}10)${NC} 💻 OpenAI Codex / GPT-5 (OpenRouter)"
-    echo -e "  ${BOLD}${GREEN}11)${NC} ⚙️  Custom Endpoint"
+    echo -e "  ${BOLD}${GREEN}11)${NC} 🔐 OpenAI Codex Mini (OpenRouter)"
+    echo -e "  ${BOLD}${GREEN}12)${NC} 🖥️  OpenCode TUI (Local + Cloud Models)"
+    echo -e "  ${BOLD}${GREEN}13)${NC} ⚙️  Custom Endpoint"
     echo -e "  ${BOLD}${YELLOW} t)${NC} 🔄 Toggle YOLO Mode"
     echo -e "  ${BOLD}${RED} x)${NC} ❌ Exit"
     echo -e ""
@@ -235,6 +237,20 @@ while true; do
             exec "$CLAUDE_BIN" --model "openai/gpt-5-codex" "${LAUNCH_ARGS[@]}" "$@"
             ;;
         11)
+            get_key_or_prompt "OPENROUTER_API_KEY" "OpenRouter API Key (sk-or-...)"
+            export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+            export ANTHROPIC_API_KEY="$OPENROUTER_API_KEY"
+            export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+            echo -e "${GREEN}Launching OpenAI Codex Mini (OpenRouter)...${NC}"
+            exec "$CLAUDE_BIN" --model "openai/codex-mini" "${LAUNCH_ARGS[@]}" "$@"
+            ;;
+        12)
+            echo -e "${GREEN}Launching OpenCode TUI...${NC}"
+            echo -e "Models: nomad-coder, nomad-reasoner, nomad-general, nomad-triage, Nemotron Ultra (cloud)"
+            echo -e "Config: ~/.config/opencode/opencode.json"
+            exec opencode
+            ;;
+        13)
             echo -e "${YELLOW}Enter Custom Base URL:${NC}"
             read -r CUSTOM_BASE_URL
             echo -e "${YELLOW}Enter Custom API/Auth Key:${NC}"
